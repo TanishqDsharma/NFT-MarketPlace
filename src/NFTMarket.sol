@@ -9,7 +9,7 @@ contract NFTMarket {
 
 event listingNft(uint256 indexed nftTokenId,address indexed seller,uint256 price);
 event purchaseNft(uint256 indexed nftTokenId,address indexed buyer,uint256 price);
-
+event marketOrderCancelled(uint256 indexed nftTokenId);
 struct MarketOrder {
     uint256 nftTokenId;
     address seller;
@@ -43,6 +43,16 @@ function buyNFT(uint256 _nftTokenId) external payable {
 
 } 
 
+
+function cancelMarketOrder(uint256 _nftTokenId) public {
+    (,address seller,) = getMarketOrder(_nftTokenId);
+    require(msg.sender==seller, "You are not the seller");
+    nft.transfer(msg.sender, _nftTokenId);
+    delete tokenOrders[_nftTokenId];
+
+
+}
+
 /** Getters */
 
 function getMarketOrder(uint256 _nftTokenId) public view returns(uint256 nftTokenId,
@@ -50,6 +60,7 @@ function getMarketOrder(uint256 _nftTokenId) public view returns(uint256 nftToke
     uint256 price){
     MarketOrder memory marketOrder = tokenOrders[_nftTokenId];
     return (marketOrder.nftTokenId,marketOrder.seller,marketOrder.price);
+
 }
 
 
