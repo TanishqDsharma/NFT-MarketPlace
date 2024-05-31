@@ -34,10 +34,12 @@ function listNFT(uint256 _nftTokenId,uint256 _price) public {
 }
 
 function buyNFT(uint256 _nftTokenId) external payable {
-    (,,uint256 price) = getMarketOrder(_nftTokenId);
+    (,address seller,uint256 price) = getMarketOrder(_nftTokenId);
     require(msg.value==price);
     nft.transfer(msg.sender,_nftTokenId);
-    
+    payable(seller).transfer(msg.value);
+    delete tokenOrders[_nftTokenId];
+    emit purchaseNft( _nftTokenId,msg.sender, msg.value);
 
 } 
 
