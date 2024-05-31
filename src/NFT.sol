@@ -20,10 +20,11 @@ contract NFT {
     uint256 nextTokenId = 1;
     
     // Create an NFT function to create a new NFT and allocate it to the caller
-    function mint(string memory _name, string memory _description) public {
+    function mint(string memory _name, string memory _description) public returns(uint256){
         tokens[nextTokenId] = Token(_name, _description, msg.sender);
         ownerTokens[msg.sender].push(nextTokenId);
         nextTokenId++;
+        return nextTokenId-1;
     }
     
     // Destroy a specified NFT
